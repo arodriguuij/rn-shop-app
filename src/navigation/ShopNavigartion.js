@@ -5,6 +5,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import ProductOverviewScreen from "../screens/shop/ProductsOverviewScreen";
 import ProductDetailScreen from "../screens/shop/ProductDetailScreen";
 import EditProductScreen from "../screens/user/EditProductScreen";
+import AuthScreen from "../screens/user/AuthScreen";
 import OrdersScreen from "../screens/shop/OrdersScreen";
 import UserProductsScreen from "../screens/user/UserProductsScreen";
 import CartScreen from "../screens/shop/CartScreen";
@@ -160,8 +161,28 @@ const DrawerScreen = () => (
   </Drawer.Navigator>
 );
 
-export default () => (
-  <NavigationContainer>
-    <DrawerScreen />
-  </NavigationContainer>
+const AuthStack = createStackNavigator();
+const AuthStackScreen = () => (
+  <AuthStack.Navigator>
+    <AuthStack.Screen
+      name="AuthScreen"
+      component={AuthScreen}
+      options={({ route }) => ({
+        ...defaultNavigationOptions,
+        headerTitle: "Auth",
+      })}
+    />
+  </AuthStack.Navigator>
 );
+
+const ShopNavigation = () => {
+  const isAuth = false;
+  return (
+    <NavigationContainer>
+      {isAuth && <DrawerScreen />}
+      {!isAuth && <AuthStackScreen />}
+    </NavigationContainer>
+  );
+};
+
+export default ShopNavigation;
