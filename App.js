@@ -7,7 +7,7 @@ import orderReducer from "./src/store/reducers/order.reducer";
 import NavigationContainer from "./src/navigation/ShopNavigartion";
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
-import logger from "redux-logger";
+import ReduxThunk from "redux-thunk";
 
 const rootReducer = combineReducers({
   products: productsReducer,
@@ -15,7 +15,7 @@ const rootReducer = combineReducers({
   orders: orderReducer,
 });
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 const fetchFonts = () => {
   return Font.loadAsync({
