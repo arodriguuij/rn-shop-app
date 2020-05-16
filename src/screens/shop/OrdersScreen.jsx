@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   View,
   StyleSheet,
+  Text
 } from "react-native";
 import { useSelector } from "react-redux";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
@@ -44,6 +45,14 @@ const OrdersScreen = ({ navigation }) => {
         <ActivityIndicator size="large" color={Colors.primary} />
       </View>
     );
+
+  if (orders.length === 0) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>No orders found, maybe start ordering some!</Text>
+      </View>
+    );
+  }
 
   return (
     <FlatList

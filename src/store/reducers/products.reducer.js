@@ -1,22 +1,23 @@
-import PRODUCTS from "../../data/dummy-data";
 import {
   DELETE_PRODUCT,
   CREATE_PRODUCT,
   UPDATE_PRODUCT,
-  SET_PRODUCTS
+  SET_PRODUCTS,
 } from "../actions/products.actions";
 import Product from "../../models/product";
 
 const initialState = {
-  availableProducts: PRODUCTS,
-  userProducts: PRODUCTS.filter((product) => product.ownerId === "u1"),
+  availableProducts: [],
+  userProducts: [],
 };
 
 const productsReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_PRODUCTS:
-      return{availableProducts: action.products,
-      userProducts: action.products.filter((product) => product.ownerId === "u1")}
+      return {
+        availableProducts: action.products,
+        userProducts: action.userProducts,
+      };
 
     case DELETE_PRODUCT:
       return {
@@ -33,7 +34,7 @@ const productsReducer = (state = initialState, action) => {
     case CREATE_PRODUCT:
       const newProduct = new Product(
         action.payload.id,
-        "u1",
+        action.payload.ownerId,
         action.payload.title,
         action.payload.imageUrl,
         action.payload.description,

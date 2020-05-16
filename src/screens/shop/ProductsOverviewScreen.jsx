@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import ProductItem from "../../components/shop/ProductItem";
 import * as cartActions from "../../store/actions/cart.actions";
 import * as productsActions from "../../store/actions/products.actions";
+import * as authActions from "../../store/actions/auth.actions";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import Colors from "../../constants/Colors";
@@ -41,23 +42,35 @@ const ProductOverviewScreen = ({ navigation }) => {
   }, [loadProducts]);
 
   //Seconcd Time and following
-  useEffect(() => {
+  /*   useEffect(() => {
     const willFocusSub = navigation.addListener("willFocus", loadProducts);
     return () => {
       if (willFocusSub) willFocusSub.remove();
     };
-  }, [loadProducts, navigation]);
+  }, [loadProducts, navigation]); */
 
   useEffect(() => {
     navigation.setParams({
       headerRight: () => (
-        <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-          <Item
-            title="Cart"
-            iconName={Platform.OS === "IOS" ? "md-cart" : "ios-cart"}
-            onPress={() => navigation.navigate("Cart", {})}
-          />
-        </HeaderButtons>
+        <View style={styles.iconContainer}>
+          <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+            <Item
+              title="Cart"
+              iconName={Platform.OS === "IOS" ? "md-cart" : "ios-cart"}
+              onPress={() => navigation.navigate("Cart", {})}
+            />
+          </HeaderButtons>
+          <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+            <Item
+              title="Cart"
+              iconName={Platform.OS === "IOS" ? "ios-contact" : "ios-contact"}
+              onPress={() => {
+                dispatch(authActions.logout());
+                navigation.navigate("AuthScreen");
+              }}
+            />
+          </HeaderButtons>
+        </View>
       ),
       headerLeft: () => (
         <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
@@ -130,6 +143,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  iconContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    width: 120,
   },
 });
 

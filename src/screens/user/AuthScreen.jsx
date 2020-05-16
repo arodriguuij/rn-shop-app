@@ -4,7 +4,9 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
   Button,
+  ActivityIndicator,
   View,
+  Alert,
 } from "react-native";
 import Input from "../../components/UI/Input";
 import Card from "../../components/UI/Card";
@@ -40,7 +42,9 @@ const formReducer = (state, action) => {
 };
 
 const AuthScreen = ({ navigation }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [isSignup, setIsSignup] = useState(false);
+  const [error, setError] = useState();
   const initialState = {
     inputValues: {
       email: "",
@@ -56,7 +60,7 @@ const AuthScreen = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
-  const authHandler = () => {
+  const authHandler = async () => {
     let action;
     if (isSignup) {
       action = authActions.signup(
@@ -69,7 +73,15 @@ const AuthScreen = ({ navigation }) => {
         formState.inputValues.password
       );
     }
-    dispatch(action);
+    setError(null);
+    setIsLoading(true);
+    try {
+      await dispatch(action);
+      navigation.navigate("DrawerScreen");
+    } catch (err) {
+      setError(err.message);
+    }
+    setIsLoading(false);
   };
 
   const inputChangeHandler = useCallback(
@@ -85,8 +97,10 @@ const AuthScreen = ({ navigation }) => {
   );
 
   useEffect(() => {
-    navigation.setParams({});
-  }, []);
+    if (error) {
+      Alert.alert("An Error Occurred!", error, [{ text: "Okay" }]);
+    }
+  }, [error]);
 
   return (
     <KeyboardAvoidingView
@@ -122,11 +136,15 @@ const AuthScreen = ({ navigation }) => {
             />
           </ScrollView>
           <View style={styles.buttonsCointainer}>
-            <Button
-              title={isSignup ? "Sign up " : "Login "}
-              color={Colors.primary}
-              onPress={authHandler}
-            />
+            {isLoading ? (
+              <ActivityIndicator size="small" color={Colors.primary} />
+            ) : (
+              <Button
+                title={isSignup ? "Sign up " : "Login "}
+                color={Colors.primary}
+                onPress={authHandler}
+              />
+            )}
           </View>
           <View style={styles.buttonsCointainer}>
             <Button
